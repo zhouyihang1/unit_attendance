@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>上下班时间配置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/lib/css/homepage.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:include="../static/common/headbar::headbar"></div>
+<div th:include="./detail_admin::homepage"></div>
+
+<div class="panel panel-default" style="width: 90%;margin-left: 5%;margin-top: 50px">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="text-align:center">配置列表</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover" style="text-align:center">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>上班时间</th>
+                <th>下班时间</th>
+                <th>上午/下午</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="configlist: ${list}">
+                <td th:text="${configlist.id}"></td>
+                <td th:text="${configlist.startWorkTime}"></td>
+                <td th:text="${configlist.endWorkTime}"></td>
+                <td th:if="${configlist.type == 0}" th:text="上午"></td>
+                <td th:if="${configlist.type == 1}" th:text="下午"></td>
+                <td>
+                    <button type="button" class="btn btn-info editBtn" id="editBtn">修改</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">修改工作时间</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="startWorkTime">上班时间</label>
+                            <input type="time" class="form-control" id="startWorkTime" name="startWorkTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="endWorkTime">下班时间</label>
+                            <input type="time" class="form-control" id="endWorkTime" name="endWorkTime">
+                        </div>
+                        <input type="hidden" id="editId" name="id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary saveBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+        // 点击修改按钮
+        $(document).on("click", "#editBtn", function() {
+            // 获取当前行的数据
+            var tr = $(this).closest('tr');
+            var id = tr.find('td:eq(0)').text();
+            var start = tr.find('td:eq(1)').text();
+            var end = tr.find('td:eq(2)').text();
+            // 将数据填充到模态框中
+            $('#startWorkTime').val(start);
+            $('#endWorkTime').val(end);
+            $('#editId').val(id);
+            // 显示模态框
+            $('#editModal').modal('show');
+        });
+
+        // 点击保存按钮
+        $('.saveBtn').click(function() {
+            // 获取修改后的数据
+            var start = $('#startWorkTime').val();
+            var end = $('#endWorkTime').val();
+            var id = $('#editId').val();
+            // 发送Ajax请求保存数据
+            $.ajax({
+                url: '/config/edit',
+                type: 'POST',
+                data: {
+                    id: id,
+                    startWorkTime: start,
+                    endWorkTime: end
+                },
+                success: function(data) {
+                    // 修改成功，关闭模态框并刷新页面
+                    $('#editModal').modal('hide');
+                    location.reload();
+                },
+                error: function() {
+                    // 修改失败，提示错误信息
+                    alert('修改失败，请稍后重试！');
+                }
+            });
+        });
+    });
+</script>
+
+
+</html>

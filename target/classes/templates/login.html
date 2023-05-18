@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>单位考勤管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/lib/css/signin.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div th:include="../static/common/headbar::headbar"></div>
+
+    <div class="container">
+        <form class="form-signin" action="/doLogin" method="post">
+            <h2 class="form-signin-heading">登录界面</h2>
+            <label for="username" class="sr-only">用户名</label>
+            <input type="text" class="form-control" placeholder="请输入用户名" required autofocus name="username" id="username">
+            <label for="password" class="sr-only">密码</label>
+            <input type="password" name="password" class="form-control" placeholder="请输入密码" id="password">
+            <div class="form-group">
+                <label for="identity">选择身份:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="identity" id="admin" value="0" checked>
+                    <label class="form-check-label" for="admin">管理员</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="identity" id="employee" value="1">
+                    <label class="form-check-label" for="employee">员工</label>
+                </div>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
+        </form>
+
+        <div th:if="${msg}" th:text="${msg}" style="font-size: 20px;color: red;width: 300px;margin: 0 auto"></div>
+    </div>
+
+</body>
+</html>

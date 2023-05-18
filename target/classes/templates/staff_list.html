@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/lib/css/homepage.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:include="../static/common/headbar::headbar"></div>
+<div th:include="./detail_admin::homepage"></div>
+<!--员工列表搜索和新增按钮-->
+<div style="padding: 20px 550px 10px;height: 80px">
+    <div class="col-sm-6">
+        <form method="get" action="/staff/list" class="form-inline" id="searchform">
+            <div class="input-group">
+                <input type="text" placeholder="输入员工名称" class="form-control" name="username">
+                <span class="input-group-btn">
+                    <input type="submit" value="搜索" class="btn btn-default">
+                </span>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-info" id="addBtn" data-toggle="modal" data-target="#addModal">新增</button>
+    </div>
+</div>
+
+<!--员工列表-->
+<div class="panel panel-default" style="width: 90%;margin-left: 5%">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="text-align:center">员工列表</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover" style="text-align:center">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>员工姓名</th>
+                <th>密码</th>
+                <th>部门</th>
+                <th>性别</th>
+                <th>电话</th>
+                <th>地址</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stafflist: ${list}">
+                <td th:text="${stafflist.id}"></td>
+                <td th:text="${stafflist.username}"></td>
+                <td th:text="${stafflist.password}"></td>
+                <td th:text="${stafflist.departmentName}"></td>
+                <td th:if="${stafflist.sex == 0}" th:text="男"></td>
+                <td th:if="${stafflist.sex == 1}" th:text="女"></td>
+                <td th:text="${stafflist.tel}"></td>
+                <td th:text="${stafflist.address}"></td>
+                <td>
+                    <button type="button" class="btn btn-info" id="editBtn" data-toggle="modal" data-target="#editModal">修改</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--新增员工模态框-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="addForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新增员工</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="addUsername">员工姓名<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" id="addUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addPassword">密码<span style="color: red">*</span></label>
+                        <input type="password" class="form-control" id="addPassword" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDepartment">部门<span style="color: red">*</span></label>
+                        <select class="form-control" id="addDepartment" name="department" required>
+                            <option value="" selected>请选择部门</option>
+                            <!--通过后端接口动态渲染部门列表-->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addSex">性别</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="sex" id="addMale" value="0" checked>
+                                男
+                            </label>
+                            <label>
+                                <input type="radio" name="sex" id="addFemale" value="1">
+                                女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addTel">电话<span style="color: red">*</span></label>
+                        <input type="tel" class="form-control" id="addTel" name="tel" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAddress">地址<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" id="addAddress" name="address" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="addSaveBtn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--修改员工模态框-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改员工</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editUsername">员工姓名<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" id="editUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">密码<span style="color: red">*</span></label>
+                        <input type="password" class="form-control" id="editPassword" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartment">部门<span style="color: red">*</span></label>
+                        <select class="form-control" id="editDepartment" name="department" required>
+                            <option value="" selected>请选择部门</option>
+                            <!--通过后端接口动态渲染部门列表-->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSex">性别</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="sex" id="editMale" value="0" checked>
+                                男
+                            </label>
+                            <label>
+                                <input type="radio" name="sex" id="editFemale" value="1">
+                                女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTel">电话<span style="color: red">*</span></label>
+                        <input type="tel" class="form-control" id="editTel" name="tel" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddress">地址<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" id="editAddress" name="address" required>
+                    </div>
+                    <input type="hidden" id="editId" name="id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" id="editSaveBtn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    $(function () {
+        //获取部门列表并渲染
+        $.ajax({
+            url: "/depart/all",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                var options = "";
+                $.each(data, function (index, item) {
+                    options += "<option value='" + item.id + "'>" + item.depName + "</option>";
+                });
+                $("#addDepartment").append(options);
+                $("#editDepartment").append(options);
+            }
+        });
+
+        //新增员工操作
+        $("#addSaveBtn").on("click", function () {
+            var username = $("#addUsername").val();
+            var password = $("#addPassword").val();
+            var department = $("#addDepartment").val();
+            var sex = $("input[name='sex']:checked").val();
+            var tel = $("#addTel").val();
+            var address = $("#addAddress").val();
+
+            if (!username || !password || !tel || !address) {
+                alert("请填写完整信息");
+                return;
+            }
+            $.ajax({
+                url: "/staff/add",
+                type: "POST",
+                data: {
+                    username: username,
+                    password: password,
+                    depId: department,
+                    sex: sex,
+                    tel: tel,
+                    address: address
+                },
+                dataType: "json",
+                success: function (data) {
+                    $('#addModal').modal('hide');
+                    window.location.reload();
+                }
+            });
+        });
+
+        //修改员工操作
+        $("#editSaveBtn").on("click", function () {
+            var id = $("#editId").val();
+            var username = $("#editUsername").val();
+            var password = $("#editPassword").val();
+            var department = $("#editDepartment").val();
+            var sex = $("input[name='sex']:checked").val();
+            var tel = $("#editTel").val();
+            var address = $("#editAddress").val();
+
+            if (!username || !password || !tel || !address) {
+                alert("请填写完整信息");
+                return;
+            }
+            $.ajax({
+                url: "/staff/edit",
+                type: "POST",
+                data: {
+                    id: id,
+                    username: username,
+                    password: password,
+                    depId: department,
+                    sex: sex,
+                    tel: tel,
+                    address: address
+                },
+                dataType: "json",
+                success: function (data) {
+                    $('#editModal').modal('hide');
+                    window.location.reload();
+                }
+            });
+        });
+
+        //删除员工操作
+        $(document).on("click", "#deleteBtn", function() {
+            var id = $(this).closest("tr").find("td:eq(0)").text();
+            if (confirm("确定要删除该员工吗？")) {
+                $.ajax({
+                    url: '/staff/delete?id=' + id,
+                    type: 'get',
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function () {
+                        alert('删除失败');
+                    }
+                });
+            }
+        });
+
+
+        $(document).on("click", "#editBtn", function() {
+            var tr = $(this).closest('tr');
+            var id = tr.find('td:eq(0)').text();
+            var username = tr.find('td:eq(1)').text();
+            var password = tr.find('td:eq(2)').text();
+            var department = tr.find('td:eq(3)').text();
+            var sex = tr.find('td:eq(4)').text();
+            var tel = tr.find('td:eq(5)').text();
+            var address = tr.find('td:eq(6)').text();
+            $('#editForm')[0].reset();
+            // 将数据传递给模态框
+            $('#editModal').find('#editId').val(id);
+            $('#editModal').find('#editUsername').val(username);
+            $('#editModal').find('#editPassword').val(password);
+            $('#editModal').find('#editDepartment').val(department);
+            $('#editModal').find("#editMale").prop("checked", sex === 0);
+            $('#editModal').find("#editFemale").prop("checked", sex === 1);
+            $('#editModal').find('#editTel').val(tel);
+            $('#editModal').find('#editAddress').val(address);
+        });
+    });
+</script>
+
+
+</html>

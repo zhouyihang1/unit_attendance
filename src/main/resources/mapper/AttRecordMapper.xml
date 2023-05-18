@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attendance.mapper.AttRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.attendance.entity.domain.AttRecord">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="staffId" column="staff_id" jdbcType="INTEGER"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
+            <result property="time" column="time" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,staff_id,state,
+        time
+    </sql>
+    <select id="statisticalRecordWithMouth" resultType="com.attendance.entity.dto.AttRecordDto">
+        CALL employee_absence_count(#{mouth});
+    </select>
+</mapper>

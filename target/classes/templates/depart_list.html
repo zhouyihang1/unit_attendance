@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>部门管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/lib/css/homepage.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:include="../static/common/headbar::headbar"></div>
+<div th:include="./detail_admin::homepage"></div>
+<div style="padding: 20px 550px 10px;height: 80px">
+    <div class="col-sm-6">
+        <form method="get" action="/depart/list" class="form-inline" id="searchform">
+            <div class="input-group">
+                <input type="text" placeholder="输入部门名称" class="form-control" name="depName">
+                <span class="input-group-btn">
+                    <input type="submit" value="搜索" class="btn btn-default">
+                </span>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-info" id="addBtn">新增</button>
+    </div>
+</div>
+
+<div class="panel panel-default" style="width: 90%;margin-left: 5%">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="text-align:center">部门列表</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover" style="text-align:center">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>部门名称</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="deplist: ${list}">
+                <td th:text="${deplist.id}"></td>
+                <td th:text="${deplist.depName}"></td>
+                <td>
+                    <button type="button" class="btn btn-info" id="editBtn">修改</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- 新增部门模态框 -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="addModalLabel">新增部门</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <div class="form-group">
+                        <label for="depName">部门名称</label>
+                        <input type="text" class="form-control" id="depName" name="depName">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="addDepartment()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 修改部门模态框 -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editModalLabel">修改部门</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label for="depName">部门名称</label>
+                        <input type="text" class="form-control" id="depName1" name="depName">
+                    </div>
+                    <input type="hidden" id="depId1" name="depId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="editDepartment()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    $('#addBtn').click(function () {
+        $('#addForm')[0].reset(); // 清空表单
+        $('#addModal').modal('show');
+    });
+
+
+    $(document).on("click", "#editBtn", function() {
+        // 获取当前行的id和部门名称
+        var id = $(this).closest("tr").find("td:eq(0)").text();
+        var depName = $(this).closest("tr").find("td:eq(1)").text();
+        // 将值填充到模态框中
+        $("#editModal #depId1").val(id);
+        $("#editModal #depName1").val(depName);
+        // 显示模态框
+        $("#editModal").modal("show");
+    });
+
+
+    // 新增部门
+    function addDepartment() {
+        var depName = $('#depName').val();
+        $.ajax({
+            url: '/depart/add',
+            type: 'post',
+            dataType: "json",
+            data: {"depName": depName},
+            success: function (data) {
+                $('#addModal').modal('hide');
+                window.location.reload();
+            },
+            error: function () {
+                alert('新增部门失败');
+            }
+        });
+    }
+
+    // 修改部门
+    function editDepartment() {
+        var depName = $('#depName1').val();
+        var depId = $('#depId1').val();
+        $.ajax({
+            url: '/depart/edit',
+            type: 'post',
+            data: {"id": depId, "depName": depName},
+            success: function (data) {
+
+                $('#editModal').modal('hide');
+                window.location.reload();
+            },
+            error: function () {
+                alert('修改部门失败');
+            }
+        });
+    }
+
+    $(document).on("click", "#deleteBtn", function() {
+        var id = $(this).closest("tr").find("td:eq(0)").text();
+        $.ajax({
+            url: '/depart/delete?id='+ id,
+            type: 'get',
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function () {
+                alert('删除部门失败');
+            }
+        });
+    });
+</script>
+
+
+</html>

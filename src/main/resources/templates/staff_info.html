@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>单位考勤管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/lib/css/homepage.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+       /* body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }*/
+
+       .form-container {
+           margin: 0 auto;
+           width: 500px;
+           padding: 20px;
+           border-radius: 10px;
+           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+       }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+
+</head>
+<body>
+<div th:include="../static/common/headbar::headbar"></div>
+<div th:fragment="homepage">
+    <nav class="nav nav-tabs" style="margin-top:50px;background-color: #EEEEEE">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">首页</a>
+            </div>
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/staff/info">个人信息</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" style="color: #000000"><span th:text="${session.user.username}+',欢迎您'"
+                                                             class="glyphicon glyphicon-user"></span>&nbsp;</a></li>
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span>&nbsp;退出</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+<div class="form-container">
+    <h2>个人信息</h2>
+    <form id="staff-form">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username" name="username" required th:value="${staff.username}">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" name="password" required th:value="${staff.password}">
+        </div>
+        <div class="form-group">
+            <label for="department">部门名称</label>
+            <input type="text" class="form-control" id="department" name="departmentName" readonly th:value="${staff.departmentName}">
+        </div>
+        <div class="form-group">
+            <label for="gender">性别</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="sex" id="male" value="0"  th:checked="${staff.sex == 0}">
+                <label class="form-check-label" for="male">
+                    男
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="sex" id="female" value="1" th:checked="${staff.sex == 1}">
+                <label class="form-check-label" for="female">
+                    女
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phone">电话号码</label>
+            <input type="tel" class="form-control" id="phone" name="tel" required th:value="${staff.tel}">
+        </div>
+        <div class="form-group">
+            <label for="address">地址</label>
+            <input type="text" class="form-control" id="address" name="address" required th:value="${staff.address}">
+        </div>
+
+        <input type="hidden" id="id" name="id" th:value="${staff.id}">
+        <button type="submit" class="btn btn-primary">提交</button>
+    </form>
+</div>
+
+
+</body>
+
+<script>
+    $(function () {
+        $('#staff-form').submit(function (event) {
+            event.preventDefault();
+            var data = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/staff/edit',
+                data: data,
+                success: function () {
+                    window.location.reload()
+                    alert("修改成功！");
+                }
+            });
+        });
+    });
+</script>
+</html>

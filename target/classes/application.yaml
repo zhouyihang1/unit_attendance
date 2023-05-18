@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/unit_attendance?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
+  mvc:
+    staticPathPattern: /static/**
+
+mybatis-plus:
+  mapper-location: classpath:mapper/*.xml
+  typeAliasesPackage: com.attendance.entity.domain
+  configuration:
+    logImpl: org.apache.ibatis.logging.stdout.StdOutImpl

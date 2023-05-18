@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>单位考勤管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/lib/css/homepage.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:include="../static/common/headbar::headbar"></div>
+<div th:fragment="homepage">
+    <nav class="nav nav-tabs" style="margin-top:50px;background-color: #EEEEEE">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">首页</a>
+            </div>
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/staff/info">个人信息</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" style="color: #000000"><span th:text="${session.user.username}+',欢迎您'"
+                                                             class="glyphicon glyphicon-user"></span>&nbsp;</a></li>
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span>&nbsp;退出</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+
+<div id="daka">
+    <div class="square3">
+        <div class="no-logo">打卡</div>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    $('#daka').click(function() {
+        // 发送Ajax请求保存数据
+        $.ajax({
+            url: '/att/add',
+            type: 'get',
+            success: function(data) {
+               alert(data)
+            },
+            error: function() {
+                // 修改失败，提示错误信息
+                alert('打卡失败，请稍后重试！');
+            }
+        });
+    });
+</script>
+</html>
