@@ -20,11 +20,11 @@ public class AttRecordServiceImpl extends ServiceImpl<AttRecordMapper, AttRecord
     implements AttRecordService{
 
     @Autowired
-    private AttRecordService attRecordService;
+    private AttRecordMapper attRecordMapper;
 
     @Override
     public List<AttRecordDto> statisticalRecordWithMouth(String mouth) {
-        return attRecordService.statisticalRecordWithMouth(mouth);
+        return attRecordMapper.statisticalRecordWithMouth(mouth);
     }
 }
 

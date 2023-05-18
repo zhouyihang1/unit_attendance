@@ -15,4 +15,7 @@
         id,staff_id,state,
         time
     </sql>
+    <select id="statisticalRecordWithMouth" resultType="com.attendance.entity.dto.AttRecordDto">
+        CALL employee_absence_count(#{mouth});
+    </select>
 </mapper>

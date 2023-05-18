@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -54,10 +55,13 @@ public class AttRecordController {
 
     @GetMapping("/statistical")
     public ModelAndView record(String month, ModelAndView modelAndView){
+        if (month == null) {
+            month = String.valueOf(LocalDateTime.now().getMonthValue());
+        }
         List<AttRecordDto> attRecordDtos =
                 attRecordService.statisticalRecordWithMouth(month);
         modelAndView.addObject("attRecordDtos",attRecordDtos);
-
+        modelAndView.setViewName("attrecord_statistical_list");
         return modelAndView;
     }
 
