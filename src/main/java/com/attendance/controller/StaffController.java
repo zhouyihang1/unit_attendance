@@ -76,4 +76,10 @@ public class StaffController {
         return modelAndView;
     }
 
+    @GetMapping("/index")
+    public ModelAndView index(ModelAndView modelAndView){
+        modelAndView.setViewName("detail_user");
+        return modelAndView;
+    }
+
 }
